@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture Analysis - Lecture Translator AI</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Icons (Remix Icon CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header class="analysis-header">
+        <div class="header-container">
+            <a href="index.html" class="brand">
+                <span class="brand-icon">✨</span>
+                <span class="brand-title">Lecture<span>Translator</span></span>
+            </a>
+            
+            <div class="nav-actions">
+                <!-- Back Home button -->
+                <a href="index.html" class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    <i class="ri-arrow-left-line"></i> Back to Dashboard
+                </a>
+                
+                <!-- Theme Toggle Button -->
+                <button id="themeToggleBtn" class="btn-icon" title="Toggle Theme" aria-label="Toggle Theme">
+                    <i class="ri-moon-line"></i>
+                </button>
+                
+                <!-- API Settings Button -->
+                <button id="settingsBtn" class="btn-icon" title="Gemini API Key Settings" aria-label="Gemini API Key Settings">
+                    <i class="ri-settings-3-line"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Results View -->
+    <main class="analysis-container">
+        
+        <!-- 1. LOADING VIEW -->
+        <section id="loadingView" class="loading-view animate-fade">
+            <div class="loader-spinner"></div>
+            <h2 id="loadingTitle" class="loading-title">Analyzing Lecture Notes</h2>
+            <p id="loadingText" class="loading-text">Google Gemini is processing your materials. Please wait...</p>
+        </section>
+
+        <!-- 2. ERROR VIEW -->
+        <section id="errorView" class="loading-view animate-fade" style="display: none;">
+            <i class="ri-error-warning-line" style="font-size: 4rem; color: var(--danger); margin-bottom: 1.5rem;"></i>
+            <h2 class="loading-title" style="color: var(--danger);">Analysis Failed</h2>
+            <p id="errorText" class="loading-text" style="margin-bottom: 2rem;">No input provided or API was unreachable.</p>
+            <a href="index.html" class="btn-primary">
+                <i class="ri-home-4-line"></i> Return to Dashboard
+            </a>
+        </section>
+
+        <!-- 3. MAIN RESULTS DASHBOARD -->
+        <div id="resultsView" style="display: none;" class="animate-fade">
+            
+            <!-- Global Floating Actions and Details -->
+            <div class="results-actions-bar">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <h2 id="lectureTitle" style="font-size: 1.5rem; font-weight: 800;">Lecture Analysis</h2>
+                    <span id="subjectBadge" class="subject-badge">
+                        <i class="ri-book-open-line"></i> <span id="subjectName">Subject</span>
+                    </span>
+                </div>
+                
+                <!-- Action Controls -->
+                <div class="results-toolbar">
+                    <button id="favoriteBtn" class="btn-icon" title="Star Favorite" aria-label="Star Favorite">
+                        <i class="ri-star-line"></i>
+                    </button>
+                    <button id="copyAllBtn" class="btn-secondary" title="Copy All to Clipboard">
+                        <i class="ri-file-copy-line"></i> Copy All
+                    </button>
+                    <button id="downloadWordBtn" class="btn-secondary" title="Download Word Document">
+                        <i class="ri-file-word-line"></i> Word
+                    </button>
+                    <button id="downloadPdfBtn" class="btn-primary" title="Download Print PDF">
+                        <i class="ri-printer-line"></i> Download PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Analysis Cards Grid layout -->
+            <div class="results-grid">
+                
+                <!-- Left Main Section -->
+                <div class="results-main">
+                    
+                    <!-- Card: Simplified Notes -->
+                    <article class="result-card" id="cardSimplifiedNotes">
+                        <div class="card-header-actions">
+                            <h3>📖 Simplified Notes</h3>
+                            <button class="card-action-btn" title="Copy Card Content" data-action="copy-card">
+                                <i class="ri-file-copy-line"></i>
+                            </button>
+                        </div>
+                        <div class="result-content" id="simplifiedNotesContent">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </article>
+
+                    <!-- Card: Short Summary -->
+                    <article class="result-card" id="cardShortSummary">
+                        <div class="card-header-actions">
+                            <h3>📝 Short Summary</h3>
+                            <button class="card-action-btn" title="Copy Card Content" data-action="copy-card">
+                                <i class="ri-file-copy-line"></i>
+                            </button>
+                        </div>
+                        <div class="result-content" id="shortSummaryContent">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </article>
+
+                    <!-- Card: Key Concepts -->
+                    <article class="result-card" id="cardKeyConcepts">
+                        <div class="card-header-actions">
+                            <h3>📌 Key Concepts</h3>
+                            <button class="card-action-btn" title="Copy Card Content" data-action="copy-card">
+                                <i class="ri-file-copy-line"></i>
+                            </button>
+                        </div>
+                        <div class="result-content" id="keyConceptsContent">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </article>
+
+                    <!-- Card: Important Definitions -->
+                    <article class="result-card" id="cardDefinitions">
+                        <div class="card-header-actions">
+                            <h3>📚 Important Definitions</h3>
+                            <button class="card-action-btn" title="Copy Card Content" data-action="copy-card">
+                                <i class="ri-file-copy-line"></i>
+                            </button>
+                        </div>
+                        <div class="result-content" id="definitionsContent">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </article>
+
+                </div>
+
+                <!-- Right Sidebar Section -->
+                <div class="results-sidebar">
+                    
+                    <!-- Card: Reading Time Saved -->
+                    <article class="result-card" id="cardReadingTime">
+                        <div class="card-header-actions">
+                            <h3>⏱ Reading Time</h3>
+                        </div>
+                        <div class="time-tracker-grid">
+                            <div class="time-box">
+                                <div id="originalTimeVal" class="time-val original">0</div>
+                                <div class="time-lbl">Original min</div>
+                            </div>
+                            <div class="time-box">
+                                <div id="simplifiedTimeVal" class="time-val">0</div>
+                                <div class="time-lbl">Simplified min</div>
+                            </div>
+                            <div id="timeSavedBadge" class="time-saved-badge">
+                                <i class="ri-speed-up-line"></i> Saved 0% reading time
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Card: Difficult Terms Explained -->
+                    <article class="result-card" id="cardDifficultTerms">
+                        <div class="card-header-actions">
+                            <h3>⚖ Difficult Terms Explained</h3>
+                            <button class="card-action-btn" title="Copy Card Content" data-action="copy-card">
+                                <i class="ri-file-copy-line"></i>
+                            </button>
+                        </div>
+                        <div class="result-content" id="difficultTermsContent">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </article>
+
+                    <!-- Card: Most Important Points -->
+                    <article class="result-card" id="cardImportantPoints">
+                        <div class="card-header-actions">
+                            <h3>⭐ Most Important Points</h3>
+                            <button class="card-action-btn" title="Copy Card Content" data-action="copy-card">
+                                <i class="ri-file-copy-line"></i>
+                            </button>
+                        </div>
+                        <div class="result-content" id="importantPointsContent">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </article>
+
+                    <!-- Card: Study Tips -->
+                    <article class="result-card" id="cardStudyTips">
+                        <div class="card-header-actions">
+                            <h3>💡 Study Tips</h3>
+                            <button class="card-action-btn" title="Copy Card Content" data-action="copy-card">
+                                <i class="ri-file-copy-line"></i>
+                            </button>
+                        </div>
+                        <div class="result-content" id="studyTipsContent">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </article>
+
+                </div>
+
+                <!-- Bottom Column: Interactive Tools (Flashcards and Quizzes) -->
+                <div class="results-interactive">
+                    
+                    <!-- Interactive Section 1: Flashcards -->
+                    <section class="interactive-panel" id="flashcardsPanel">
+                        <h3 class="interactive-title">
+                            <span><i class="ri-pages-line" style="color: var(--accent);"></i> Interactive Flashcards</span>
+                            <span id="flashcardCount" style="font-size: 0.875rem; color: var(--text-secondary);">Card 0 of 0</span>
+                        </h3>
+                        
+                        <div class="flashcards-container">
+                            <div id="flashcardWrapper" class="flashcard-wrapper">
+                                <div id="flashcard" class="flashcard">
+                                    
+                                    <!-- Front Face -->
+                                    <div class="flashcard-face flashcard-front">
+                                        <div class="flashcard-badge">Concept / Term</div>
+                                        <div id="flashcardFrontText" class="flashcard-text">Loading...</div>
+                                    </div>
+                                    
+                                    <!-- Back Face -->
+                                    <div class="flashcard-face flashcard-back">
+                                        <div class="flashcard-badge">Definition / Explanation</div>
+                                        <div id="flashcardBackText" class="flashcard-text">Loading...</div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            
+                            <!-- Flip Controls -->
+                            <div class="flashcard-controls">
+                                <button id="prevFlashcardBtn" class="btn-icon" title="Previous"><i class="ri-arrow-left-s-line"></i></button>
+                                <button id="flipFlashcardBtn" class="btn-secondary" style="flex-grow: 1; margin: 0 0.5rem;"><i class="ri-repeat-2-line"></i> Flip Card</button>
+                                <button id="nextFlashcardBtn" class="btn-icon" title="Next"><i class="ri-arrow-right-s-line"></i></button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Interactive Section 2: Quiz Mode -->
+                    <section class="interactive-panel" id="quizPanel">
+                        <h3 class="interactive-title">
+                            <span><i class="ri-questionnaire-line" style="color: var(--accent);"></i> Interactive Quiz Mode</span>
+                            <span id="quizScoreCount" style="font-size: 0.875rem; color: var(--text-secondary); display: none;">Score: 0/0</span>
+                        </h3>
+                        
+                        <!-- Quiz View State: Intro / Progress -->
+                        <div id="quizContainer" class="quiz-container">
+                            <div class="quiz-progress">
+                                <div id="quizProgressFill" class="quiz-progress-fill"></div>
+                            </div>
+
+                            <!-- Question Card -->
+                            <div class="quiz-question-card">
+                                <div>
+                                    <div id="quizQuestionType" class="quiz-question-type">Question Type</div>
+                                    <h4 id="quizQuestionText" class="quiz-question-text">Loading question text...</h4>
+                                    
+                                    <!-- Option elements for Multiple Choice -->
+                                    <div id="quizOptions" class="quiz-options" style="display: none;"></div>
+                                    
+                                    <!-- Input elements for Short Answer / Essay -->
+                                    <textarea id="quizTextInput" class="quiz-text-input" placeholder="Type your answer here..." style="display: none;"></textarea>
+                                </div>
+
+                                <!-- Feedback section -->
+                                <div id="quizFeedback" class="quiz-feedback">
+                                    <strong id="quizFeedbackHeader">Feedback</strong>
+                                    <p id="quizFeedbackText" style="margin-top: 0.25rem; font-size: 0.8125rem;"></p>
+                                </div>
+
+                                <!-- Navigation buttons -->
+                                <div class="quiz-footer">
+                                    <button id="quizSkipBtn" class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Skip Question</button>
+                                    <button id="quizSubmitBtn" class="btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.875rem;"><span>Submit Answer</span></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quiz View State: Score Screen (hidden initially) -->
+                        <div id="quizScoreView" class="quiz-score-view" style="display: none;">
+                            <div class="quiz-score-circle">
+                                <span id="quizScoreVal" class="quiz-score-val">0</span>
+                                <span class="quiz-score-lbl">Total Score</span>
+                            </div>
+                            <h4 id="quizScoreHeadline" class="quiz-score-headline">Good Effort!</h4>
+                            <p id="quizScoreDesc" class="quiz-score-desc">Review your study guides and terms to improve your next attempt.</p>
+                            <button id="quizRestartBtn" class="btn-primary">
+                                <i class="ri-refresh-line"></i> Retake Quiz
+                            </button>
+                        </div>
+                    </section>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Modal: API Settings (Identical for configuration on both pages) -->
+    <div id="settingsModal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="modalCloseBtn" class="modal-close"><i class="ri-close-line"></i></button>
+            <h3 class="modal-title">
+                <i class="ri-key-2-line" style="color: var(--accent);"></i> Gemini API Setup
+            </h3>
+            <div class="modal-body">
+                <p>To analyze lectures, you need a Google Gemini API Key. Your key will be stored securely in <strong>sessionStorage</strong> and is cleared automatically when you close this browser tab.</p>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label class="form-label" for="apiKeyInput">Gemini API Key</label>
+                    <input type="password" id="apiKeyInput" class="input-custom" placeholder="AIzaSy...">
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button id="saveKeyBtn" class="btn-primary" style="padding: 0.625rem 1.25rem; font-size: 0.9375rem;">
+                    Save Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="js/history-manager.js?v=1.1"></script>
+    <script src="js/gemini-api.js?v=1.1"></script>
+    <script src="js/analysis-app.js?v=1.1"></script>
+</body>
+</html>

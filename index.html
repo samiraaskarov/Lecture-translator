@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture Translator AI - Speed up your exam prep</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Icons (Remix Icon CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- PDF.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header class="analysis-header">
+        <div class="header-container">
+            <a href="index.html" class="brand">
+                <span class="brand-icon">✨</span>
+                <span class="brand-title">Lecture<span>Translator</span></span>
+            </a>
+            
+            <div class="nav-actions">
+                <!-- Theme Toggle Button -->
+                <button id="themeToggleBtn" class="btn-icon" title="Toggle Theme" aria-label="Toggle Theme">
+                    <i class="ri-moon-line"></i>
+                </button>
+                
+                <!-- API Settings Button -->
+                <button id="settingsBtn" class="btn-icon" title="Gemini API Key Settings" aria-label="Gemini API Key Settings">
+                    <i class="ri-settings-3-line"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="home-container animate-fade">
+        
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-tagline">
+                <i class="ri-sparkling-fill"></i> Powered by Google Gemini
+            </div>
+            <h1 class="hero-title">Lecture <span>Translator AI</span></h1>
+            <p class="hero-subtitle">Understand your lecture notes in seconds with AI. Study smarter, remember longer, and ace your exams.</p>
+        </div>
+
+        <!-- Left Column: Input and Parameters -->
+        <section class="card-panel">
+            <h2 class="card-title">
+                <i class="ri-file-text-line" style="color: var(--accent);"></i> Process New Lecture
+            </h2>
+            
+            <form id="lectureForm" onsubmit="return false;">
+                
+                <!-- Drag and Drop Upload -->
+                <div class="form-group">
+                    <label class="form-label">Upload Lecture PDF</label>
+                    <div id="dropzone" class="upload-area">
+                        <input type="file" id="fileInput" accept="application/pdf" style="display: none;">
+                        <i class="ri-upload-cloud-2-line upload-icon"></i>
+                        <p class="upload-text">Drag & Drop PDF file here</p>
+                        <p class="upload-hint">or click to browse files (Selectable PDF only)</p>
+                        
+                        <!-- File Upload Progress / Info -->
+                        <div id="uploadInfo" class="upload-info">
+                            <i class="ri-checkbox-circle-fill"></i>
+                            <span id="uploadInfoText">File selected successfully.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Textarea Paste Option -->
+                <div class="form-group">
+                    <label class="form-label" for="notesText">Or Paste Lecture Notes / Text</label>
+                    <textarea id="notesText" class="text-area-custom" placeholder="Paste your lecture notes, summaries, syllabus, or scientific papers here... (minimum 50 characters)"></textarea>
+                </div>
+
+                <!-- Settings Grid -->
+                <div class="settings-grid">
+                    
+                    <!-- Difficulty Dropdown -->
+                    <div class="form-group">
+                        <label class="form-label" for="difficultySelect">Difficulty Level</label>
+                        <select id="difficultySelect" class="select-custom">
+                            <option value="Beginner">🟢 Beginner</option>
+                            <option value="Student" selected>🟡 Student (Default)</option>
+                            <option value="Academic">🔴 Academic</option>
+                        </select>
+                    </div>
+
+                    <!-- Language Dropdown -->
+                    <div class="form-group">
+                        <label class="form-label" for="languageSelect">Output Language</label>
+                        <select id="languageSelect" class="select-custom">
+                            <option value="English" selected>English</option>
+                            <option value="Turkish">Turkish</option>
+                            <option value="Georgian">Georgian</option>
+                            <option value="Azerbaijani">Azerbaijani</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- Action Button -->
+                <div class="action-wrapper">
+                    <button type="submit" id="analyzeBtn" class="btn-primary analyze-btn">
+                        <span>✨ Analyze Notes</span>
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+        <!-- Right Column: Sidebar Dashboard (Stats & History) -->
+        <aside class="side-panel">
+            
+            <!-- Statistics Card -->
+            <div class="card-panel">
+                <h3 class="card-title" style="font-size: 1.25rem;">
+                    <i class="ri-bar-chart-box-line" style="color: var(--accent);"></i> Study Statistics
+                </h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div id="statAnalyzed" class="stat-val">0</div>
+                        <div class="stat-lbl">Lectures Analyzed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="statTimeSaved" class="stat-val">0m</div>
+                        <div class="stat-lbl">Est. Study Saved</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="statFavorites" class="stat-val">0</div>
+                        <div class="stat-lbl">Starred Notes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="statQuizScore" class="stat-val">0%</div>
+                        <div class="stat-lbl">Avg. Quiz Grade</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Card -->
+            <div class="card-panel history-section">
+                <h3 class="card-title" style="font-size: 1.25rem; margin-bottom: 1rem;">
+                    <i class="ri-history-line" style="color: var(--accent);"></i> Lecture History
+                </h3>
+                
+                <!-- Search Bar -->
+                <div class="search-box">
+                    <i class="ri-search-line search-icon"></i>
+                    <input type="text" id="historySearch" class="search-input" placeholder="Search saved lectures...">
+                </div>
+
+                <!-- History Items List -->
+                <div id="historyList" class="history-list">
+                    <!-- History entries rendered dynamically by app.js -->
+                    <div class="history-empty">
+                        <i class="ri-folder-open-line" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
+                        No saved lecture notes yet. Process one to start.
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+    </main>
+
+    <!-- Modal: API Settings -->
+    <div id="settingsModal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="modalCloseBtn" class="modal-close"><i class="ri-close-line"></i></button>
+            <h3 class="modal-title">
+                <i class="ri-key-2-line" style="color: var(--accent);"></i> Gemini API Setup
+            </h3>
+            <div class="modal-body">
+                <p>To analyze lectures, you need a Google Gemini API Key. Your key will be stored securely in <strong>sessionStorage</strong> and is cleared automatically when you close this browser tab.</p>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label class="form-label" for="apiKeyInput">Gemini API Key</label>
+                    <input type="password" id="apiKeyInput" class="input-custom" placeholder="AIzaSy...">
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button id="saveKeyBtn" class="btn-primary" style="padding: 0.625rem 1.25rem; font-size: 0.9375rem;">
+                    Save Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="js/history-manager.js?v=1.1"></script>
+    <script src="js/pdf-helper.js?v=1.1"></script>
+    <script src="js/gemini-api.js?v=1.1"></script>
+    <script src="js/app.js?v=1.1"></script>
+</body>
+</html>
