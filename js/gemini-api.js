@@ -8,20 +8,19 @@ const GeminiApi = (function() {
     const API_KEY_SESSION_KEY = 'temp_gemini_api_key';
     const DEFAULT_MODEL = 'gemini-1.5-flash'; // Secure fallback model
 
-    // Get API Key from sessionStorage (temporary security)
+    // Get API Key from sessionStorage (Sabit anahtarınız entegre edildi)
     function getApiKey() {
-    return "AQ.Ab8RN6ITbouoaY5xJaWedAOURX5Jvr5RU3xKXnS_5s7Trgqo7g";
-}
+        return "AQ.Ab8RN6ITbouoaY5xJaWedAOURX5Jvr5RU3xKXnS_5s7Trgqo7g";
     }
 
-    // Set API Key in sessionStorage
-   function setApiKey(key) {
-    return;
-}
-    // Check if key is available
+    // Set API Key in sessionStorage (Artık boş kalabilir, ezilmeyi önlüyor)
+    function setApiKey(key) {
+        return;
+    }
+
+    // Check if key is available (Her zaman aktif olması için true dönüyor)
     function hasApiKey() {
-    return true;
-}
+        return true;
     }
 
     /**
