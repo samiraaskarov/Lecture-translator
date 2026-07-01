@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Ayarlar butonu veya modal kapatma tetikleyicisi için güvenli kapanış
     if (settingsBtn) {
         settingsBtn.addEventListener('click', function() {
-            // Eğer bir modal kapatma mantığı varsa tetiklemesi için
             closeSettingsModal();
         });
     }
@@ -105,7 +104,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Analiz butonuna basıldığında tetiklenecek ana mantık
     if (analyzeBtn) {
         analyzeBtn.addEventListener('click', async function() {
-            // Burada gemini-api.js dosyasındaki analyzeLecture fonksiyonu çağrılır
             console.log("Analyze button clicked!");
             showUploadFeedback("Analyzing with Gemini AI...", false);
             
@@ -117,7 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const result = await GeminiApi.analyzeLecture(textToAnalyze, "Student", "Turkish");
                     console.log("Analysis Result:", result);
                     showUploadFeedback("Analysis complete!", false);
-                    // Sonuçları ekrana basacak fonksiyonunuz varsa buraya ekleyebilirsiniz (örn: renderResults(result);)
                 } else {
                     throw new Error("GeminiApi class is missing.");
                 }
