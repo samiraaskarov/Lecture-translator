@@ -10,22 +10,18 @@ const GeminiApi = (function() {
 
     // Get API Key from sessionStorage (temporary security)
     function getApiKey() {
-        return sessionStorage.getItem(API_KEY_SESSION_KEY);
+    return "AQ.Ab8RN6ITbouoaY5xJaWedAOURX5Jvr5RU3xKXnS_5s7Trgqo7g";
+}
     }
 
     // Set API Key in sessionStorage
-    function setApiKey(key) {
-        if (key) {
-            sessionStorage.setItem(API_KEY_SESSION_KEY, key.trim());
-        } else {
-            sessionStorage.removeItem(API_KEY_SESSION_KEY);
-        }
-    }
-
+   function setApiKey(key) {
+    return;
+}
     // Check if key is available
     function hasApiKey() {
-        const key = getApiKey();
-        return !!(key && key.trim().length > 10);
+    return true;
+}
     }
 
     /**
