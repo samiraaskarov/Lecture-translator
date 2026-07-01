@@ -1,4 +1,4 @@
-s/**
+/**
  * Lecture Translator AI - Gemini API Client
  * Manages API keys (temporary session-based), auto-resolves the latest free Gemini model,
  * constructs analysis prompts, runs requests, and recovers from JSON parsing anomalies.
