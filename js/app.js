@@ -97,24 +97,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 GeminiApi.setApiKey(key);
                 showNotice("API Key saved to session.", false);
             } else {
-                GeminiApi.setApiKey("");
-                showNotice("API Key cleared.", true);
+             // ==========================================
+    // Sabit API Anahtarı Tanımlaması
+    // ==========================================
+    const SABIT_API_KEY = "AQ.Ab8RN6ITbouoaY5xJaWedAOURX5Jvr5RU3xKXnS_5s7Trgqo7g";
+    
+    // Her ihtimale karşı tarayıcı hafızasına ve GeminiApi sınıfına anahtarı otomatik yüklüyoruz
+    if (typeof GeminiApi !== 'undefined') {
+        GeminiApi.setApiKey(SABIT_API_KEY);
+    }
+
+    // Eski anahtar temizleme butonunun eksik kalan parantezini kapatıyoruz
+            if (typeof GeminiApi !== 'undefined') {
+                GeminiApi.setApiKey(SABIT_API_KEY);
             }
             closeSettingsModal();
-           // updateAnalyzeButtonState();
         });
     }
 
-    // Check if key is already stored and toggle colors
+    // Buton durumunu kontrol eden fonksiyon (Artık hata vermeyecek)
     function updateAnalyzeButtonState() {
         if (!settingsBtn) return;
-        if (GeminiApi.hasApiKey()) {
-            settingsBtn.style.color = 'var(--success)';
-            settingsBtn.style.borderColor = 'var(--success)';
-        } else {
-            settingsBtn.style.color = '';
-            settingsBtn.style.borderColor = '';
-        }
+        // API anahtarını yukarıda sabitlediğimiz için bu buton hep aktif/yeşil kalabilir
+        settingsBtn.style.color = 'var(--success)';
+        settingsBtn.style.borderColor = 'var(--success)';
     }
     updateAnalyzeButtonState();
 
