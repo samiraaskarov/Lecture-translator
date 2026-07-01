@@ -81,7 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (settingsModal) settingsModal.style.display = 'none';
     }
 
-    if (settingsBtn) settingsBtn.addEventListener('click', openSettingsModal);
+    if (settingsBtn) {
+    settingsBtn.style.display = "none";
+}
     if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeSettingsModal);
     window.addEventListener('click', (e) => {
         if (settingsModal && e.target === settingsModal) closeSettingsModal();
@@ -99,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showNotice("API Key cleared.", true);
             }
             closeSettingsModal();
-            updateAnalyzeButtonState();
+           // updateAnalyzeButtonState();
         });
     }
 
@@ -211,12 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Validation 2: API key setup
-        if (!GeminiApi.hasApiKey()) {
-            alert("Gemini API key is required. Please click the settings gear on the top-right to save a temporary key.");
-            openSettingsModal();
-            return;
-        }
 
         // Store configurations in sessionStorage to parse in analysis page
         sessionStorage.setItem('current_lecture_text', text);
